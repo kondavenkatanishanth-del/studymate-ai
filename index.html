@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#f7f8ff">
+    <meta name="description" content="StudyMate AI helps students understand topics, summarize notes, generate quizzes, and create personalized study plans.">
+
+    <title>StudyMate AI — Learn Smarter</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <a href="#home" class="logo" aria-label="StudyMate AI home">
+            <span class="logo-icon">✦</span>
+            StudyMate <span class="logo-accent">AI</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#about">About</a>
+        </nav>
+
+        <a href="#dashboard" class="nav-button">
+            Start Learning <span>↗</span>
+        </a>
+    </header>
+
+    <main>
+
+        <!-- Hero -->
+        <section class="hero" id="home">
+            <div class="hero-glow hero-glow-one"></div>
+            <div class="hero-glow hero-glow-two"></div>
+
+            <div class="hero-content">
+                <div class="badge">
+                    <span class="status-dot"></span>
+                    Your personal AI study companion
+                </div>
+
+                <h1>
+                    Make every study
+                    session <span>count.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Learn difficult concepts, turn lengthy notes into
+                    summaries, practice with quizzes, and build a study
+                    plan that works for you.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#dashboard" class="primary-button">
+                        Start Learning <span>→</span>
+                    </a>
+
+                    <a href="#features" class="secondary-button">
+                        Explore Features
+                    </a>
+                </div>
+
+                <div class="hero-trust">
+                    <span class="trust-icon">✓</span>
+                    <span>Four useful tools. One smarter way to study.</span>
+                </div>
+            </div>
+
+            <!-- Hero preview -->
+            <div class="hero-visual">
+                <div class="floating-label label-top">
+                    <span>✨</span> AI-powered learning
+                </div>
+
+                <div class="preview-card">
+                    <div class="preview-top">
+                        <div class="preview-brand">
+                            <div class="app-icon">✦</div>
+                            <div>
+                                <strong>StudyMate AI</strong>
+                                <small>Your learning space</small>
+                            </div>
+                        </div>
+
+                        <span class="online-status">
+                            <span></span> Ready
+                        </span>
+                    </div>
+
+                    <div class="preview-welcome">
+                        <small>YOUR STUDY TOOLKIT</small>
+                        <h3>What are we learning today?</h3>
+                    </div>
+
+                    <div class="preview-tool">
+                        <div class="tool-icon purple">📖</div>
+                        <div class="tool-copy">
+                            <strong>Explain Topics</strong>
+                            <small>Make complex ideas simple</small>
+                        </div>
+                        <span class="tool-arrow">↗</span>
+                    </div>
+
+                    <div class="preview-tool">
+                        <div class="tool-icon orange">📝</div>
+                        <div class="tool-copy">
+                            <strong>Summarize Notes</strong>
+                            <small>Focus on key information</small>
+                        </div>
+                        <span class="tool-arrow">↗</span>
+                    </div>
+
+                    <div class="preview-tool">
+                        <div class="tool-icon green">❓</div>
+                        <div class="tool-copy">
+                            <strong>Generate Quiz</strong>
+                            <small>Practice what you learn</small>
+                        </div>
+                        <span class="tool-arrow">↗</span>
+                    </div>
+
+                    <div class="preview-tool">
+                        <div class="tool-icon blue">📅</div>
+                        <div class="tool-copy">
+                            <strong>Study Plan</strong>
+                            <small>Organize your preparation</small>
+                        </div>
+                        <span class="tool-arrow">↗</span>
+                    </div>
+
+                    <div class="preview-footer">
+                        <span>✦</span> Small steps lead to big progress.
+                    </div>
+                </div>
+
+                <div class="floating-label label-bottom">
+                    <span>🎯</span> Study with purpose
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick highlights -->
+        <section class="highlights" aria-label="StudyMate benefits">
+            <div class="highlight-item">
+                <span class="highlight-icon">⚡</span>
+                <div>
+                    <strong>Learn faster</strong>
+                    <small>Understand topics simply</small>
+                </div>
+            </div>
+
+            <div class="highlight-item">
+                <span class="highlight-icon">🧠</span>
+                <div>
+                    <strong>Practice smarter</strong>
+                    <small>Strengthen your knowledge</small>
+                </div>
+            </div>
+
+            <div class="highlight-item">
+                <span class="highlight-icon">📈</span>
+                <div>
+                    <strong>Stay organized</strong>
+                    <small>Plan your study time</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="features section" id="features">
+            <div class="section-heading">
+                <span class="eyebrow">BUILT FOR STUDENTS</span>
+                <h2>Your study toolkit,<br><span>all in one place.</span></h2>
+                <p>
+                    Spend less time feeling stuck and more time
+                    understanding, practicing, and improving.
+                </p>
+            </div>
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+                    <div class="feature-icon purple">📖</div>
+                    <span class="card-number">01</span>
+                    <h3>Explain Topic</h3>
+                    <p>
+                        Get clear, student-friendly explanations
+                        of difficult concepts and subjects.
+                    </p>
+                    <button class="text-button"
+                        onclick="openTool('Explain Topic')">
+                        Explain a topic <span>→</span>
+                    </button>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon orange">📝</div>
+                    <span class="card-number">02</span>
+                    <h3>Summarize Notes</h3>
+                    <p>
+                        Turn lengthy notes into concise summaries
+                        with the important ideas highlighted.
+                    </p>
+                    <button class="text-button"
+                        onclick="openTool('Summarize Notes')">
+                        Summarize notes <span>→</span>
+                    </button>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon green">❓</div>
+                    <span class="card-number">03</span>
+                    <h3>Generate Quiz</h3>
+                    <p>
+                        Create practice questions from a topic
+                        and check how well you understand it.
+                    </p>
+                    <button class="text-button"
+                        onclick="openTool('Generate Quiz')">
+                        Practice now <span>→</span>
+                    </button>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon blue">📅</div>
+                    <span class="card-number">04</span>
+                    <h3>Study Plan</h3>
+                    <p>
+                        Organize your subjects and available
+                        time into a personalized study schedule.
+                    </p>
+                    <button class="text-button"
+                        onclick="openTool('Study Plan')">
+                        Create a plan <span>→</span>
+                    </button>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- Dashboard -->
+        <section class="dashboard section" id="dashboard">
+            <div class="dashboard-heading">
+                <div>
+                    <span class="eyebrow">YOUR LEARNING SPACE</span>
+                    <h2>Ready to make progress? <span>👋</span></h2>
+                    <p>Choose a tool to get started with your studies.</p>
+                </div>
+
+                <div class="dashboard-mark">✦ AI WORKSPACE</div>
+            </div>
+
+            <div class="dashboard-grid">
+
+                <article class="dashboard-card">
+                    <div class="dashboard-card-top">
+                        <div class="feature-icon purple">📖</div>
+                        <span class="dashboard-step">01 / LEARN</span>
+                    </div>
+                    <h3>Explain Topic</h3>
+                    <p>
+                        Enter a topic and get an easy-to-understand
+                        explanation to help you learn the basics.
+                    </p>
+                    <button class="dashboard-button"
+                        onclick="openTool('Explain Topic')">
+                        Start Learning <span>→</span>
+                    </button>
+                </article>
+
+                <article class="dashboard-card">
+                    <div class="dashboard-card-top">
+                        <div class="feature-icon orange">📝</div>
+                        <span class="dashboard-step">02 / REVIEW</span>
+                    </div>
+                    <h3>Summarize Notes</h3>
+                    <p>
+                        Paste your study notes and turn them into
+                        a shorter, easier-to-revise summary.
+                    </p>
+                    <button class="dashboard-button"
+                        onclick="openTool('Summarize Notes')">
+                        Summarize Notes <span>→</span>
+                    </button>
+                </article>
+
+                <article class="dashboard-card">
+                    <div class="dashboard-card-top">
+                        <div class="feature-icon green">❓</div>
+                        <span class="dashboard-step">03 / PRACTICE</span>
+                    </div>
+                    <h3>Generate Quiz</h3>
+                    <p>
+                        Test yourself with AI-generated questions
+                        about the subject you are studying.
+                    </p>
+                    <button class="dashboard-button"
+                        onclick="openTool('Generate Quiz')">
+                        Generate Quiz <span>→</span>
+                    </button>
+                </article>
+
+                <article class="dashboard-card">
+                    <div class="dashboard-card-top">
+                        <div class="feature-icon blue">📅</div>
+                        <span class="dashboard-step">04 / ORGANIZE</span>
+                    </div>
+                    <h3>Study Plan</h3>
+                    <p>
+                        Describe your exam date, subjects, and
+                        available hours to create a study plan.
+                    </p>
+                    <button class="dashboard-button"
+                        onclick="openTool('Study Plan')">
+                        Create Study Plan <span>→</span>
+                    </button>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- About -->
+        <section class="about section" id="about">
+            <div class="about-panel">
+                <div class="about-symbol">✦</div>
+
+                <div class="about-content">
+                    <span class="eyebrow">ABOUT STUDYMATE AI</span>
+                    <h2>A little help can make<br><span>a big difference.</span></h2>
+                    <p>
+                        StudyMate AI brings useful study tools together
+                        in one simple platform. Learn concepts, review
+                        notes, practice questions, and plan your
+                        preparation in a more organized way.
+                    </p>
+                    <a href="#dashboard" class="primary-button">
+                        Explore Your Tools <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <a href="#home" class="logo footer-logo">
+            <span class="logo-icon">✦</span>
+            StudyMate <span class="logo-accent">AI</span>
+        </a>
+
+        <p>Learn smarter. Prepare better. Keep growing.</p>
+
+        <div class="footer-bottom">
+            <span>© 2026 StudyMate AI · Academic Project</span>
+            <a href="#home">Back to top ↑</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
