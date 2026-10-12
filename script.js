@@ -236,7 +236,10 @@ function showStudyPlan(plan) {
 
   container.style.cssText = `
     position: fixed;
-inset: 3%;
+top: 3%;
+left: 3%;
+right: 3%;
+bottom: 3%;
 z-index: 9999;
 background: #f5f8ff;
 color: #1e293b;
@@ -351,10 +354,10 @@ if (
   return;
 }
   // Remove table pipes and Markdown symbols from other lines
-  item.textContent = trimmed
-    .replace(/\|/g, " • ")
-    .replace(/\*\*/g, "")
-    .replace(/^\*\s*/, "• ");
+ item.textContent = trimmed
+  .replace(/\|/g, " ")
+  .replace(/\\\|/g, "")
+  .replace(/\*\s*/g, "• ");
 
   item.style.margin = "8px 0";
 
@@ -478,9 +481,12 @@ function showQuiz(quizText) {
             continue;
         }
 
-        const optionMatch = text.match(
-            /^([A-D])[).:\-]\s*(.+)$/i
-        );
+        
+
+const optionMatch = text.match(
+  /^([A-D])\s*[).:-]\s*(.+)$/i
+);
+
 
         if (optionMatch) {
             currentQuestion.options.push({
@@ -500,23 +506,40 @@ function showQuiz(quizText) {
     }
 
     // Resolve answers such as "C", "C) text", or full option text.
-    function getCorrectOption(question) {
-        const answer = question.answer.trim();
+ 
+function getCorrectOption(question) {
+  const answer = String(question.answer || "").trim();
 
-        const letterMatch = answer.match(
-            /^(?:option\s*)?([A-D])(?:[).:\s]|$)/i
-        );
+  // Match answers such as A, A), A., or Option A
+  const letterMatch = answer.match(
+    /(?:^|\b)(?:option\s*)?([A-D])(?:\s*[).:\-]|\s*$)/i
+  );
 
-        if (letterMatch) {
-            return letterMatch[1].toUpperCase();
-        }
+  if (letterMatch) {
+    return letterMatch[1].toUpperCase();
+  }
 
-        const matchingOption = question.options.find(option =>
-            option.text.toLowerCase() === answer.toLowerCase()
-        );
+  // Match an answer containing the full option text
+  const normalizedAnswer = answer
+    .replace(/^(?:correct answer|answer)\s*:\s*/i, "")
+    .replace(/^option\s+[A-D]\s*[:.)-]?\s*/i, "")
+    .replace(/[`"'*.]/g, "")
+    .trim()
+    .toLowerCase();
 
-        return matchingOption ? matchingOption.letter : "";
-    }
+  const matchingOption = question.options.find(option => {
+    const optionText = option.text
+        .trim()
+        .toLowerCase()
+        .replace(/[.,!?;:'"`]/g, "")
+        .replace(/\s+/g, " ");
+
+    return optionText === normalizedAnswer;
+});
+
+  return matchingOption ? matchingOption.letter : "";
+}
+
 
     // Popup background
     const overlay = document.createElement("div");
@@ -943,4 +966,159 @@ function showFormattedResponse(title, text) {
   document.addEventListener("keydown", handleEscape);
   document.body.appendChild(overlay);
   closeButton.focus();
+}
+
+// Login / Signup form switching
+const showLoginBtn = document.getElementById("showLogin");
+const showSignupBtn = document.getElementById("showSignup");
+const navSignupBtn = document.getElementById("signupBtn");
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
+
+if (showLoginBtn && showSignupBtn && loginForm && signupForm) {
+  showLoginBtn.addEventListener("click", () => {
+    loginForm.hidden = false;
+    signupForm.hidden = true;
+  });
+
+  showSignupBtn.addEventListener("click", () => {
+    loginForm.hidden = true;
+    signupForm.hidden = false;
+  });
+
+  
+if (navSignupBtn) {
+  navSignupBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    loginForm.hidden = true;
+    signupForm.hidden = false;
+
+    document.getElementById("login").scrollIntoView({
+      behavior: "smooth"
+    });
+  });
+}
+
+  
+  signupForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const name = document.getElementById("signupName").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
+    const message = document.getElementById("authMessage");
+
+    message.textContent = "Creating your account...";
+
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Signup failed.");
+      }
+
+      message.textContent = data.message;
+      signupForm.reset();
+      signupForm.hidden = true;
+      loginForm.hidden = false;
+    } catch (error) {
+      message.textContent = error.message || "Unable to create account.";
+    }
+  });
+    
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const message = document.getElementById("authMessage");
+
+  message.textContent = "Logging in...";
+
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Login failed.");
+    }
+
+    localStorage.setItem("studyMateUser", JSON.stringify(data.user));
+    
+const dashboardUser = document.getElementById("dashboardUser");
+const dashboardUserName = document.getElementById("dashboardUserName");
+const dashboardUserEmail = document.getElementById("dashboardUserEmail");
+
+dashboardUserName.textContent = data.user.name;
+dashboardUserEmail.textContent = data.user.email;
+dashboardUser.hidden = false;
+
+    message.textContent = `Welcome, ${data.user.name}!`;
+    loginForm.reset();
+  } catch (error) {
+    message.textContent = error.message || "Unable to log in.";
+  }
+});
+
+
+function restoreDashboardUser() {
+  const savedUser = localStorage.getItem("studyMateUser");
+
+  if (!savedUser) return;
+
+  try {
+    const user = JSON.parse(savedUser);
+    const dashboardUser = document.getElementById("dashboardUser");
+    const dashboardUserName = document.getElementById("dashboardUserName");
+    const dashboardUserEmail = document.getElementById("dashboardUserEmail");
+
+    if (dashboardUser && dashboardUserName && dashboardUserEmail) {
+      dashboardUserName.textContent = user.name || "";
+      dashboardUserEmail.textContent = user.email || "";
+      dashboardUser.hidden = false;
+    }
+  } catch (error) {
+    localStorage.removeItem("studyMateUser");
+    document.getElementById("authMessage").textContent = "";
+  }
+}
+
+restoreDashboardUser();
+// Logout functionality
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("studyMateUser");
+
+    const dashboardUser = document.getElementById("dashboardUser");
+    const loginStatus = document.getElementById("loginStatus");
+
+    if (dashboardUser) {
+      dashboardUser.hidden = true;
+    }
+
+    if (loginStatus) {
+      loginStatus.textContent = "Logged out";
+    }
+
+    document.getElementById("authMessage").textContent =
+      "You have logged out successfully.";
+  });
+}
 }

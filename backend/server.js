@@ -3,13 +3,23 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const { GoogleGenAI } = require("@google/genai");
-
+const { MongoClient } = require("mongodb");
+const bcrypt = require("bcryptjs");
 const app = express();
 const PORT = 3000;
+const mongoClient = new MongoClient(process.env.MONGODB_URI);
+let db;
+async function connectToMongoDB() {
+  await mongoClient.connect();
+  db = mongoClient.db("studymate");
+  console.log("MongoDB connected successfully!");
+}
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY
 });
+
+
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..")));
@@ -132,15 +142,29 @@ app.post("/api/quiz", async (req, res) => {
           model: "gemini-3.1-flash-lite",
           contents: `Create a short quiz for a student based on this topic.
 
-Generate exactly 5 multiple-choice questions.
+Generate exactly 5 multiple-choice questions about this topic.
 
-For each question include:
-- The question
-- 4 options labeled A, B, C, D
-- The correct answer
-- A short explanation of the answer
+For every question, use this exact format:
 
-Keep the questions simple and educational.
+Question 1: Write the question here?
+A) First option
+B) Second option
+C) Third option
+D) Fourth option
+Correct Answer: B
+Explanation: Explain briefly why B is correct.
+
+Repeat the same format for Questions 2, 3, 4, and 5.
+
+STRICT RULES:
+- Provide exactly 4 options labelled A), B), C), and D).
+- Write the correct answer as a single letter only: A, B, C, or D.
+- Ensure the correct answer matches the correct option.
+- Include a short explanation for each question.
+- Do not use Markdown tables or code blocks.
+- Do not include an introduction or conclusion.
+- Do not reveal answers before the questions.
+- Keep the quiz simple and educational.
 
 Topic:
 ${topic}`
@@ -233,10 +257,122 @@ Keep the plan simple, practical, and student-friendly.`
   }
 });
 
+
+ // SIGN UP
+app.post("/api/signup", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        error: "Please fill in all fields."
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        error: "Password must be at least 8 characters."
+      });
+    }
+
+    const users = db.collection("users");
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const existingUser = await users.findOne({
+      email: normalizedEmail
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        error: "An account with this email already exists."
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    await users.insertOne({
+      name: name.trim(),
+      email: normalizedEmail,
+      password: hashedPassword,
+      createdAt: new Date()
+    });
+
+    return res.status(201).json({
+      message: "Account created successfully. You can now log in."
+    });
+  } catch (error) {
+    console.error("Signup error:", error);
+    return res.status(500).json({
+      error: "Unable to create account. Please try again."
+    });
+  }
+});
+
+
+ // LOGIN
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error: "Please enter your email and password."
+      });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await db.collection("users").findOne({
+      email: normalizedEmail
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        error: "Invalid email or password."
+      });
+    }
+
+    const passwordMatches = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!passwordMatches) {
+      return res.status(401).json({
+        error: "Invalid email or password."
+      });
+    }
+
+    return res.status(200).json({
+      message: "Login successful.",
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email
+      }
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({
+      error: "Unable to log in. Please try again."
+    });
+  }
+});
+
+
 // ==============================
 // START SERVER
 // ==============================
-app.listen(PORT, () => {
-  console.log(`StudyMate AI server running on http://localhost:${PORT}`);
-});
+async function startServer() {
+  try {
+    await connectToMongoDB();
+
+    app.listen(PORT, () => {
+      console.log(`StudyMate AI server running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to connect to MongoDB:", error.message);
+  }
+}
+
+startServer();
 
