@@ -6,7 +6,7 @@ const { GoogleGenAI } = require("@google/genai");
 const { MongoClient } = require("mongodb");
 const bcrypt = require("bcryptjs");
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 let db;
 async function connectToMongoDB() {
