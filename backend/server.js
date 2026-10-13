@@ -5,9 +5,33 @@ const path = require("path");
 const { GoogleGenAI } = require("@google/genai");
 const { MongoClient } = require("mongodb");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
+
+
+function requireLogin(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      error: "Please log in to use StudyMate AI."
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      error: "Your login session is invalid or expired. Please log in again."
+    });
+  }
+}
 let db;
 async function connectToMongoDB() {
   await mongoClient.connect();
@@ -34,7 +58,7 @@ app.get("/api/test", (req, res) => {
 // ==============================
 // EXPLAIN TOPIC
 // ==============================
-app.post("/api/explain", async (req, res) => {
+app.post("/api/explain", requireLogin, async (req, res) => {
   try {
     const { topic } = req.body;
 
@@ -76,7 +100,7 @@ Include:
 // ==============================
 // SUMMARIZE NOTES
 // ==============================
-app.post("/api/summarize", async (req, res) => {
+app.post("/api/summarize", requireLogin, async (req, res) => {
   try {
     const { notes } = req.body;
 
@@ -120,7 +144,7 @@ ${notes}`
   }
 });
 
-app.post("/api/quiz", async (req, res) => {
+app.post("/api/quiz", requireLogin, async (req, res) => {
   try {
     const { topic } = req.body;
 
@@ -204,7 +228,7 @@ ${topic}`
 // STUDY PLAN
 // ============================
 
-app.post("/api/study-plan", async (req, res) => {
+app.post("/api/study-plan", requireLogin, async (req, res) => {
   try {
     const { details } = req.body;
 
@@ -341,9 +365,14 @@ app.post("/api/login", async (req, res) => {
         error: "Invalid email or password."
       });
     }
-
+    const token = jwt.sign(
+  { id: user._id.toString(), email: user.email },
+  process.env.JWT_SECRET,
+  { expiresIn: "1d" }
+);
     return res.status(200).json({
       message: "Login successful.",
+      token: token,
       user: {
         id: user._id.toString(),
         name: user.name,

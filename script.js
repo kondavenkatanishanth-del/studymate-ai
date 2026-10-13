@@ -66,6 +66,17 @@ function showFeatureMessage(feature) {
 
 
 async function openTool(tool) {
+  const savedUser = localStorage.getItem("studyMateUser");
+
+if (!savedUser) {
+  alert("Please log in or sign up to use StudyMate AI.");
+
+  document.getElementById("login").scrollIntoView({
+    behavior: "smooth"
+  });
+
+  return;
+}
 
   // Explain Topic
   if (tool === "Explain Topic") {
@@ -82,7 +93,8 @@ async function openTool(tool) {
       const response = await fetch("/api/explain", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("studyMateToken")
         },
         body: JSON.stringify({
           topic: topic.trim()
@@ -119,8 +131,9 @@ async function openTool(tool) {
       const response = await fetch("/api/summarize", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
-        },
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + localStorage.getItem("studyMateToken")
+  },
         body: JSON.stringify({
           notes: notes.trim()
         })
@@ -156,9 +169,12 @@ if (tool === "Generate Quiz") {
   try {
     const response = await fetch("/api/quiz", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+
+headers: {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer " + localStorage.getItem("studyMateToken")
+},
+
       body: JSON.stringify({
         topic: topic.trim()
       })
@@ -194,8 +210,10 @@ if (tool === "Study Plan") {
     const response = await fetch("/api/study-plan", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("studyMateToken")
       },
+
       body: JSON.stringify({
         details: details.trim()
       })
@@ -1059,6 +1077,7 @@ loginForm.addEventListener("submit", async (event) => {
     }
 
     localStorage.setItem("studyMateUser", JSON.stringify(data.user));
+    localStorage.setItem("studyMateToken", data.token);
     
 const dashboardUser = document.getElementById("dashboardUser");
 const dashboardUserName = document.getElementById("dashboardUserName");
